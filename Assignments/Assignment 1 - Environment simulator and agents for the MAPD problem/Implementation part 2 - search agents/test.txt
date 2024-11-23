@@ -1,0 +1,16 @@
+#N 7                       ; number of vertices N in graph (from V1 to Vn)
+
+#E1 1 2 W1                 ; Edge 1 from vertex 1 to vertex 2, weight 1
+#E1 2 3 W1                 ; Edge 1 from vertex 1 to vertex 2, weight 1
+#E1 3 4 W1                 ; Edge 1 from vertex 1 to vertex 2, weight 1
+#E1 4 5 W1                 ; Edge 1 from vertex 1 to vertex 2, weight 1
+#E1 1 6 W1                 ; Edge 1 from vertex 1 to vertex 2, weight 1
+#E1 6 7 W1                 ; Edge 1 from vertex 1 to vertex 2, weight 1
+#E1 7 5 W30                 ; Edge 1 from vertex 1 to vertex 2, weight 1
+
+#P1 V5 0 D V1 100  ; Package 1 at V2 from time 0, deliver to V5 on or before time 10
+
+#F V3 V4            ; Edge from V1 to V2 is fragile (can only be traversed once)
+
+#A V1              ; Normal agent starts at V1
+#I V1              ; interfering agent start at v2
