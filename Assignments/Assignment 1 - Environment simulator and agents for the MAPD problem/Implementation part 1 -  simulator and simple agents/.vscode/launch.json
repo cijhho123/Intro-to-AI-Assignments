@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TestGenerator",
+            "request": "launch",
+            "mainClass": "src.Tests.TestGenerator",
+            "projectName": "project_3aa45de8"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "src.Env.Main",

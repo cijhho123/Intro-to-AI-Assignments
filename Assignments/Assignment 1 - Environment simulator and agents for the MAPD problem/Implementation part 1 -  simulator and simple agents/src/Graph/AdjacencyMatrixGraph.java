@@ -271,7 +271,7 @@ public int[][] getCheapestPath(int e1, int e2){
 
     public int extractNextStepFromPath(int[] path, int dst){
         int prev = dst;
-        while(path[path[prev]] != -1 && path[path[prev]] != 0)
+        while(path[prev] != -1 && path[path[prev]] != -1 && path[path[prev]] != 0)
             prev = path[prev];
 
         return prev;

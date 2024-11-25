@@ -63,7 +63,7 @@ public class Enviroment {
         }
 
         System.out.println("");
-
+        /*
         for (Package p : packages) {
             System.out.print("\nPackage #" + p.getId() + " status: " + p.getStatus());
             Player e = p.getPlayer(); 
@@ -73,6 +73,7 @@ public class Enviroment {
                 System.out.print(" at location V" + p.getStartingLocationIndex());
             System.out.print(" with a deadline of " + p.getDeadline() + "\n");
         }
+        */
 
     }
 
