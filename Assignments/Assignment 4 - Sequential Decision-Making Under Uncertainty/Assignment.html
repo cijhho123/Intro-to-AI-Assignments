@@ -1,0 +1,127 @@
+<HTML>
+<HEAD>
+<TITLE>AI Programming Assignment 4</TITLE>
+<LINK REV="made" HREF="mailto:webmaster@cs.bgu.ac.il">
+
+</HEAD>
+
+<BODY>
+        <CENTER>
+        <H1>Introduction to Artificial Inteligence </H1>
+        <H3>Programming Assignment 4</H3>
+        </CENTER>
+<HR>
+        <CENTER>
+<H2> Programming assignment - Decision-making under uncertainty  </H2>
+<H2>MAPD Problem ("Canadian Traveler Problem")</H2>
+        </CENTER>
+<p>
+
+<H3>Goals </H3>
+<P>
+Sequential decision making under uncertainty using 
+belief-state MDP for decision-making in the MAPD.
+(This is actually the stochasic variant of the Canadian traveler problem.)
+
+<H3>MAPD Delivery Decision Problem - Domain Description</H3>
+
+<P>
+The domain description is similar to that described in assignment 1,
+except that again  we do not know the locations of the blocakges.
+For simplicity, however, we will assume that the blockages occur independently, (i.e. that all fragile edges that
+will be blocked are
+already been blocked, but we don't know for certain whether they are) with a known
+given probability. They are revealed with certainty when the agent reaches 
+an adjacent vertex.
+
+<P>
+Thus, in the current problem to be solved, we are given a weighted
+undirected graph, where each edge has a known probability of being blocked.
+These distributions are jointly independent.
+The agent's only actions are traveling between vertices.
+Also for simplicity, we will assume only one agent, starting at s already holding a package, and only one known
+delivery location, and that the true state of a fragile edge never changes (that is, if initially blocked
+it stays blocked, and if initially unblocked it stays unblocked, even if the agent traverses it).
+The problem is to find a policy that delivers the package in as short a time as possible (in expectation).
+
+<P>
+The graph can be provided in a manner similar to previous assignments, for example:
+
+<pre>
+#N 5                       ; number of vertices N in graph (from V1 to Vn)
+
+#E1 1 2 W1                 ; Edge 1 from vertex 1 to vertex 2, weight 1
+#E2 3 4 W1                 ; Edge 2 from vertex 3 to vertex 4, weight 1
+#E3 2 3 W2                 ; Edge 3 from vertex 2 to vertex 3, weight 2
+#E4 1 3 W1                 ; Edge 4 from vertex 1 to vertex 3, weight 4
+#E5 2 4 W5                 ; Edge 5 from vertex 2 to vertex 4, weight 5 
+#E6 3 5 W2                 ; Edge 6 from vertex 4 to vertex 5, weight 2
+#E7 1 5 W100               ; Edge 7 from vertex 1 to vertex 5, weight 100
+
+#P1 D V5          ; Package 1 to be delivered at V5 (already carried)
+
+#F V3 V4  0.4      ; Edge from 3 to 4 is fragile, blocked with probability 0.4 
+#F V2 V3  0.1      ; Edge from 2 to 3 is fragile, blocked with probability 0.1
+
+#A V1          ; Agent starts at V1
+</pre>
+
+
+<P>
+The start and goal (target) vertices, should be determined via some
+form of user input (as in the file, or querying the user). For example,
+in the above graph the start vertex is V1, and the goal (target) vertex is V5.
+
+<H3>Solution method</H3>
+
+<P>
+The Canadian traveller problem is known to be PSPACE-complete (and it is likely that the
+uncertain MAPD problem is also PSPACE-complete) so you will
+be required to solve only very small instances. We will require that the
+entire belief space be stored in memory explicitly, and thus impose a limit
+of graph size at most 50 vertices with at most 10 possible uncertain blockages.
+Your program should initialize
+belief space value functions and use a form of value iteration
+(discussed in class) to compute the value function for
+the belief states. Maintain the
+optimal action during the value iteration for each belief state,
+so that you have the optimal policy at convergence.
+
+
+<H3>Requirements </H3>
+
+<P>
+Your program should read the data, including the parameters
+(start and target vertices). You should construct the policy, and
+present it in some way. Provide at least the following types of output:
+
+<OL>
+<LI> A full printout of the value of each belief-state, and the
+     optimal action in that belief state, if it exists. 
+     (Print something that indicates so if this state is irregular,
+     e.g. if it is unreachable).
+<LI> Run a sequence of simulations. That is, generate a graph instance
+     (blockage locations) according to the  distributions, and run the
+     agent through this graph based on the (optimal) policy computed 
+     by your algorithm. Display the graph instance and sequence of actions.
+     Allow the user to run additional simulations, for a newly generated
+     instance in each case.
+</OL>
+
+
+
+<H3>Deliverables </H3>
+
+<OL>
+<LI> Source code and executable files of programs.
+<LI> Explanation of the method employed in your algorithm.
+<LI> Non-trivial example runs on at least 2 scenarios,
+including the input and output.
+<LI> Submit makefile and short description on how to run your program.
+</OL>
+
+<P>
+
+Official deadline: TBA, 2025
+</BODY>
+</HTML>

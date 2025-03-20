@@ -1,0 +1,189 @@
+<HTML>
+<HEAD>
+<TITLE>AI Programming Assignment 3</TITLE>
+<LINK REV="made" HREF="mailto:webmaster@cs.bgu.ac.il">
+
+</HEAD>
+
+<BODY>
+        <CENTER>
+        <H1>Introduction to Artificial Inteligence </H1>
+        <H3>Programming Assignment 3</H3>
+        </CENTER>
+<HR>
+        <CENTER>
+<H2> Programming assignment - Reasoning under uncertainty  </H2>
+<H2>MAPD Problem: Locate the Blockages and Packages</H2>
+        </CENTER>
+<p>
+
+<H3>Goals </H3>
+<P>
+Probabilistic reasoning using 
+Bayes networks, with scenarios similar to the
+MAPD problem environment of assignment 1.
+
+<H3>Uncerain MAPD Problem - Domain Description</H3>
+
+<P>
+
+As they try to find their best path, in the real world, robots may be unable
+to tell in advance  where there are packages to be delivered and which fragile edges are blocked, if any.
+There may be evidence which can help, but one cannot be sure until
+the vertex in question is observed by visiting it,
+an edge is observed from an adjacent vertex.
+
+Not knowing the blockages and
+package locations in advance makes it hard
+to plan an optimal path, so reasoning about the unknown is crucial.
+We know that it is more likely for edges near package locations to be blocked due to Murphy's law,
+and packages are more likely to appear at times of high demand.
+In this version of the problem, we will consider only binary-valued occupation
+of vertices, i.e. whether it contains a package, or not. 
+Note that in this assignments, there is no agent movement and the state of the environment does not change. Only probabislistic reasoning
+about unobserved variable state is to be done.
+
+<P>
+Thus we have a binary random variable B(e)
+standing in for blockage at fragile edge e,
+one binary random variable D(v) standing in for "package at v" for each vertex v,
+and a 3-valued variable S standing for the "season": low, medium, and high demand.
+The package events are assumed independent given the season, with known distributions given
+season. In the input we are given for each vertex that a probablity that it contains a package given low demand. 
+This probability is doubled for medium demand, and quadrupled for high demand
+(up to a maximum of 1 obviously).
+
+The edge variables are noisy-or distributed given the packages at neighboring vertices,
+with qi=Q*w(e) where Q is specified in the input. There is also global "leakage probability" L specified in the input.
+<P>
+All in all, you have 3 types of variables (BN nodes): blockages (one for each edge)
+season (only one global variable) and package present (one for each vertex).
+<P>
+
+In your program, a file specifies the geometry (size of grid and blocked and fragile edges), and parameters such as P(B(v)=true)|low demand).
+Then, you enter some locations where blockages, or packages are 
+reported either present or absent (and the rest remain unknown), or the season.
+This is the evidence in the problem.
+
+Once evidence is instantiated, you need to perform reasoning about the likely locations of 
+blockages, and packages, and the season (all probabilities below "given the evidence"):
+
+<OL>
+<LI> What is the probability that each of the vertices contains packages?
+<LI> What is the probability that each of the edges is blocked?
+<LI> What is the distribution of the season variable?
+<LI> What is the probability that a certain path (set of edges) is free from blockages?
+(Note that the distributions of blockages in edges are NOT necessarily independent.) (bonus)
+<LI> What is the path from a given location to a goal that has the highest probability of
+being free from blockages? (bonus)
+</OL>
+
+<P>
+Input can be as an ASCII
+file, similar to graph descriptions in previous assignments, for example:
+
+<pre>
+#N 5                       ; number of vertices N in graph (from V1 to Vn)
+
+#E1 1 2 W1                 ; Edge 1 from vertex 1 to vertex 2, weight 1
+#E2 3 4 W1                 ; Edge 2 from vertex 3 to vertex 4, weight 1
+#E3 2 3 W2                 ; Edge 3 from vertex 2 to vertex 3, weight 2
+#E4 1 3 W1                 ; Edge 4 from vertex 1 to vertex 3, weight 4
+#E5 2 4 W5                 ; Edge 5 from vertex 2 to vertex 4, weight 5 
+#E6 3 5 W2                 ; Edge 6 from vertex 4 to vertex 5, weight 2
+#E7 1 5 W2                 ; Edge 7 from vertex 1 to vertex 5, weight 2
+
+#P1 V2 0.2        ; Vertex V2 probability of package given low demand season 0.2
+#P2 V3 0.15       ; Vertex V3 probability of package given low demand season 0.15
+                  ; Either assume package probability 0 by default,
+                  ; or make sure to specify this probability for all vertices.
+
+#F V1 V2           ; Edge from V1 to V2 is fragile
+#F V2 V3           ; Edge from V2 to V3 is fragile
+
+#L 0.1         ; Global leakage probability 0.1
+#Q 0.2         ; Parameter Q is 0.2
+#S 0.1 0.4 0.5 ; Prior distribution over season: 0.1 for low, 0.4 for medium, 0.5 for high
+</pre>
+<P>
+ 
+<H3>Requirements </H3>
+
+<P>
+(Part I) Your program should read the data, including the distribution
+parameters, which are defined as above.
+The program should construct a Bayes network according
+to the scenario.
+The program should also allow for an output of the Bayes network constructed
+for the scenario.
+
+<P>
+For example, part of the output for the above graph would be:
+<pre>
+SEASON:
+  P(low) = 0.1
+  P(medium) = 0.4
+  P(high) = 0.5
+	
+VERTEX V2:
+  P(package|low) = 0.2
+  P(package|medium) = 0.4
+  P(package|high) = 0.8
+
+EDGE V2, V3:
+  P(blocked|no package V2, no package V3) = 0.1    ; Leakage probability L
+  P(blocked|no package V2, package V3) = 0.6       ; = 1- qi = 1-(Q*w(e))
+  P(blocked|package V2, no package V3) = 0.6
+  P(blocked|package V2, package V3) = 0.84
+
+VERTEX V3:
+  P(package|low) = 0.15
+  P(package|medium) = 0.3
+  P(package|high) = 0.6
+etc.
+</pre>
+
+<P>
+(Part II) After the network is fully constructed, you should support querying the
+user for a set of evidence. We do this
+by reading one piece of evidence at a time (e.g. "Blockage reported at edge E3", and then
+"Package reported at vertex V2" etc.).
+The online interactive operations your program  should support are:
+<IL>
+<LI> Reset evidence list to empty.
+<LI> Add piece of evidence to evidence list.
+<LI> Do probabilistic reasoning according to items 1, 2, 3, above (also items 4 or 5 if youe are doing the bonus part), 
+and report the results.
+<LI> Quit.
+</IL>
+
+<P>
+Probabilistic reasoning should be done
+in order to answer the questions on
+distribution of blockages, etc., and report on the answers,
+including all the posterior probabilities. 
+
+You may use any algorithm in the literature that supports solution of
+BNs, including simple enumerarion,
+variable elimination, polytree propagation, or sampling.
+
+
+<H3>Deliverables </H3>
+
+<OL>
+<LI> Source code and executable files of programs.
+<LI> Explanation of the method for constructing the BN and your
+reasoning algorithm.
+<LI> Non-trivial example runs on at least 2 scenarios,
+including the input and output.
+<LI> Submit makefile and short description on how to run your program.
+ i.e. how what  parameters are passed to the program and how 
+other inputs including 
+at least one full example on how to run your program with actual input.
+</OL>
+
+<P>
+
+Due date: TBA, 2025.
+</BODY>
+</HTML>

@@ -1,9 +1,0 @@
-#N 3                       ; number of vertices N in graph (from V1 to Vn)
-
-#E1 1 2 W1                 ; Edge 1 from vertex 1 to vertex 2, weight 1
-#E1 2 3 W2
-
-#P1 V3 0 D V1 15  ; Package 1 at V2 from time 0, deliver to V5 on or before time 10
-
-
-#H V1               ; "Human" agent (see below)  starts at V2
