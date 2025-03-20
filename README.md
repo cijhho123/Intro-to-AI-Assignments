@@ -145,7 +145,7 @@ Example: `#Q 0.2  ; Parameter Q is set to 0.2`
 
 ## Season Distribution - Assignments 3,4
 Represents the starting location of the agent in the MAPD (Canadian Traveler Problem) domain.  
-Syntax: ``#S <low season probability> <medium season probability> <high season probability>`  
+Syntax: `#S <low season probability> <medium season probability> <high season probability>`  
 Example: `#S 0.1 0.4 0.5  ; Prior distribution: 0.1 for low, 0.4 for medium, 0.5 for high demand season`  
 
 ## Agent Starting Location - Assignments 3,4
