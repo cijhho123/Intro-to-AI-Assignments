@@ -1,0 +1,124 @@
+
+<!-- saved from url=(0048)https://www.cs.bgu.ac.il/~shimony/AI2015/BN.html -->
+<html><script src="chrome-extension://efhlocglafmcfhkpojjbckpbonbfbgdb/pc-override.js" type="text/javascript"></script><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"></head><body>
+
+<h2>Definitions and algorithms related to Bayes network topology</h2>
+
+<p>
+Bayes network (BN) topology: a directed acyclic graph G. Removing
+the edge directions from G we get the <b>underlying undirected graph</b>
+of the BN. We distinguish between <b>directed paths</b>, defined as usual;
+and <b>undirected paths</b>,
+which are simple (loopless)
+paths in the underlying undirected graph of G. Note that in these
+undirected paths we sometimes still refer to 
+the direction of the edges in the original
+graph, e.g. in defining d-separation.
+
+</p><h3>Definition of d-separation</h3>
+
+<p>
+Let X, Y, Z be disjoint sets of nodes in a directed graph G.
+Then <b>X is d-separated from Y given Z</b>, denoted d-sep(X,Y|Z),
+just when <b>every node x in X is d-separated from every node y in Y given
+Z</b>. (Definition of latter follows).
+
+</p><p>
+Node x is d-separated from node y given Z, denoted d-sep(x,y|Z),
+just when every <b>undirected path from x to y is blocked by Z</b>.
+
+</p><p>
+An undirected path p from x to y is blocked by Z just when there
+exists a <b>node w on p that is blocked by Z</b>.
+Note that w must be neither x, nor y, and the blocking is
+defined (below) relative to the path p.
+
+</p><p>
+A node w is blocked by Z on path p if either of the following conditions hold:
+<il>
+</il></p><li> w is in Z, and w is either a "passthrough" node 
+or a "diverging" node on p.
+</li><li> Neither w nor any of its decendents (transitive closure of "children")
+is in Z, and w is a "converging" node on p.
+<il>
+<p>
+The topological statements on the role of w in path p is w.r.t. the
+edge directions in the directed graph: "converging" means that
+both of the edges in p are directed towards w; "diverging" means
+they are both directed outwards from w, and "passthrough" means
+one edge towards w and one outwards from w.
+
+</p><h3>Pre-processing of BNs for reasoning tasks</h3>
+
+<p>
+Since probabilisitic inference in BNs is NP-hard, and even computing
+d-separation needs to consider a potentially exponential number of paths,
+pre-processing of the BN to remove nodes if possible is important.
+First, we define the concept of "nodes of interest". For probabilistic
+reaoning, these are the evidence nodes and the query nodes (i.e. node
+for which we need to compute the marginal probability). For d-separation
+queries d-sep(X,Y|Z),
+the nodes in X, Y, Z are all nodes of intetest
+(and in particular Z is "the evidence").
+We consider 2 important special cases:
+
+<il>
+</il></p></il></li><li> <b>Barren node</b>: a node is not a node of interest <b>and</b>
+has no children.
+</li><li> <b>Evidence root node</b>: an evidence node that has no parents.
+ 
+
+<p>
+</p><h4>Pre-processing for d-separation</h4>
+
+<p>
+Prior to checking a query d-sep(x,y|Z), one can remove all barren nodes,
+and also all evidence root nodes. This can be repeated until no more nodes
+can be removed. The reason for this is that any path p through a barren
+node must be converging, and since w is not in Z, then w blocks p.
+Likewise, any path p through a root node must be diverging, and
+if w is in Z then it blocks p.
+
+</p><h4>Pre-processing for probabilistic reasoning</h4>
+
+<p>
+Likewise, for probabilistic reasoning query P(X|E=<b>e</b>),
+all barren nodes can be removed
+prior to reasoning. Any evidence root node v can be removed as well,
+but care must be taken to remove the irrelevant table entries from
+all children of v.
+In addition, any evidence node v that is d-separated from X given
+the rest of the nodes in E can be deleted from the evidence list.
+That is because d-separation entails independence.
+These pre-processing operations may be repeated until no
+additional nodes can be removed.
+
+</p><h3>Special topologies: polytree and directed-path singly connected graphs</h3>
+
+<p>
+In general, probabilistic reaoning in BNs is NP-hard. Special case topologies
+allow for polynomial-time algorithms:
+
+<il>
+</il></p></li><li> <b>Polytree</b>: a directed graph that has no cycles in the
+underlying undirected graph. Most probabilistic reasoning tasks,
+such as computing posterior marginal, can be done in polynomial
+time for poly-trees. In the UAI community, this toplogy is sometimes
+(incorrectly, for historical reasons) called "singly connected".
+</li><li> (Directed path) <b>Singly connected</b>:  a directed graph where
+for every pair of nodes
+s, t, there is at most one <b>directed</b> path from s to t.
+Note that this case includes all polytrees, but is a strictly more general
+class of graphs. E.g. all 2-level BNs are necessarily (directed-path) singly
+connected, but may not be polytrees (may contain numerous loops
+in the underlying undirected graph). Probabilistic reasoning in
+these networks is NP-hard in general, except for "prediction" tasks,
+i.e. computing P(X|E=<b>e</b>) where the evidence nodes
+are all root nodes (or alternately, null evidence), in which case
+inference can be trivially be done in polynomial time.
+
+
+
+
+
+</li></body></html>

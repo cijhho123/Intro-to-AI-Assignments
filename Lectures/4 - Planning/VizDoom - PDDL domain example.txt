@@ -1,0 +1,177 @@
+(define (domain vizdoom)
+
+(:requirements :timed-initial-literals :durative-actions :typing )
+
+(:types
+	enemy cell gun health color dir door - object
+)
+
+(:functions 
+	(distance ?a ?b - cell)
+)
+
+(:predicates
+     (robot_at ?wp - cell)
+     (facing ?d - dir)
+     (open ?a ?b - cell)
+	 (connected ?a ?b - cell ?d - dir)
+	 (MV_allowed ?a - cell)
+	 (unblocked ?a - cell)
+     (mechanism_OK ?d - door)
+     (mon_at ?m - enemy ?loc - cell ?d - dir)
+     (mon_state ?m - enemy ?h - health)
+	 (to-left ?a ?b - dir)
+	 (door_obj ?d - door ?a ?b - cell)
+	 (door_direction ?d - door ?h - dir)
+	 (lock_color ?d - door ?c - color)
+	 (holding_key ?k - color)
+	 (key_at ?a - cell ?k - color)
+	 (gun_at ?a - cell ?g - gun)
+	 (ammo_at ?a - cell ?g - gun)
+	 (have_gun ?g - gun)
+	 (have_ammo ?a - gun)
+)
+
+(:constants
+     NORTH SOUTH EAST WEST - dir
+	 ALIVE DEAD - health
+	 BOGUS - enemy
+	 PISTOL SHOTGUN - gun
+	 RED GREEN BLUE YELLOW - color
+	 ALWAYS_OPEN - door
+)
+
+; Necessary parts of init
+;(init:
+;	(to-left NORTH EAST)
+;	(to-left EAST SOUTH)
+;	(to-left SOUTH WEST)
+;	(to-left WEST NORTH)
+;   (mon-at BOGUS almost-everywhere)  ; Bogus dead monsters almost everywhere.
+;   (mon-state BOGUS DEAD)
+;)
+
+; Action for moving from a location allowing more than one visit	 
+(:durative-action move_forward
+	:parameters (?from ?to - cell ?direction - dir)
+	:duration ( = ?duration (* 5 (distance ?from ?to)))
+	:condition (and
+		   (at start (robot_at ?from))
+           (at start (facing ?direction))
+		   (at start (MV_allowed ?from))
+		   (at start (unblocked ?to))
+		   (at start (connected ?from ?to ?direction))
+           (at start (open ?from ?to))
+	      )
+	:effect (and
+		(at start (not (robot_at ?from)))
+		(at end (robot_at ?to))
+		)
+)
+
+; Action for moving from a location which allows only one visit (no MV_allowed)
+(:durative-action move_forward_block
+	:parameters (?from ?to - cell ?direction - dir)
+	:duration ( = ?duration (* 5 (distance ?from ?to)))
+	:condition (and
+		   (at start (robot_at ?from))
+           (at start (facing ?direction))
+		   (at start (unblocked ?to))
+		   (at start (connected ?from ?to ?direction))
+           (at start (open ?from ?to))
+	      )
+	:effect (and
+		(at start (not (robot_at ?from)))
+		(at end (robot_at ?to))
+		(at start (not (unblocked ?from)))
+		)
+)
+
+(:durative-action turn_left
+	:parameters (?cur_dir ?new_dir - dir)
+	:duration ( = ?duration 1)
+	:condition (and (at start (facing ?cur_dir))
+	                (at start (to-left ?new_dir ?cur_dir)))
+	:effect (and (at start (not (facing ?cur_dir)))
+		         (at end (facing ?new_dir)))
+)
+
+(:durative-action turn_right
+	:parameters (?cur_dir ?new_dir - dir)
+	:duration ( = ?duration 1)
+	:condition (and (at start (facing ?cur_dir))
+	                (at start (to-left ?cur_dir ?new_dir)))
+	:effect (and (at start (not (facing ?cur_dir)))
+		         (at end (facing ?new_dir)))
+)
+
+
+(:durative-action shoot
+	:parameters (?cur_dir - dir ?loc - cell ?g - gun ?monster - enemy)
+	:duration ( = ?duration 1)
+	:condition (and (at start (facing ?cur_dir))
+                     (at start (mon_at ?monster ?loc ?cur_dir))
+					 (at start (mon_state ?monster ALIVE))
+                     (at start (have_gun ?g))
+                     (at start (have_ammo ?g))
+				)
+	:effect (and (at start (not (mon_state ?monster ALIVE)))
+                 (at end (mon_state ?monster DEAD)))
+)
+
+(:durative-action unlock
+	:parameters (?k - color ?from ?to - cell ?d - door)
+	:duration ( = ?duration 1)
+	:condition (and (at start (mechanism_OK ?d))
+			        (at start (holding_key ?k))
+					(at start (door_obj ?d ?from ?to))
+					(at start (lock_color ?d ?k))
+				)
+	:effect (and (at end (open ?from ?to))
+			  (at end (open ?to ?from)))
+
+ )
+
+(:durative-action pickup_key 
+	:parameters (?loc - cell ?k - color)
+	:duration ( = ?duration 1)
+	:condition (and (at start (robot_at ?loc))
+					(at start (key_at ?loc ?k))
+				)
+	:effect (at end (holding_key ?k))
+)
+
+(:durative-action pickup_ammo 
+	:parameters (?loc - cell ?a - gun)
+	:duration ( = ?duration 1)
+	:condition (and (at start (robot_at ?loc))
+					(at start (ammo_at ?loc ?a))
+				)
+	:effect (at end (have_ammo ?a))
+)
+
+
+(:durative-action pickup_gun
+	:parameters (?loc - cell ?a - gun)
+	:duration ( = ?duration 1)
+	:condition (and (at start (robot_at ?loc))
+					(at start (gun_at ?loc ?a))
+				)
+	:effect (at end (have_ammo ?a))
+)
+
+; actions below under construction or future development
+
+;(:durative-action strafe-right )
+
+;(:durative-action strafe-left )
+
+;(:durative-action pickup-armor )
+
+
+)
+
+
+
+
+

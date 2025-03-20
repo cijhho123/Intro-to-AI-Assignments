@@ -1,0 +1,98 @@
+(define (problem Example1)
+(:domain VizDoom)
+(:objects
+    c_0_0 c_0_1 c_0_2 c_0_3 c_1_0 c_1_1 - cell
+	d1 d2 - door
+	mojo - enemy
+)
+(:init
+    (to-left NORTH EAST)
+	(to-left EAST SOUTH)
+	(to-left SOUTH WEST)
+	(to-left WEST NORTH)
+	
+	(MV_allowed c_0_0)
+	(unblocked c_0_0)
+	(MV_allowed c_0_1)
+	(unblocked c_0_1)
+	(MV_allowed c_0_2)
+	(unblocked c_0_2)
+	(MV_allowed c_0_3)
+	(unblocked c_0_3)
+	(MV_allowed c_1_0)
+	(unblocked c_1_0)
+	(MV_allowed c_1_1)
+	(unblocked c_1_1)
+
+	(connected c_0_0 c_0_1 EAST)
+	(connected c_0_1 c_0_0 WEST)
+	(= (distance c_0_0 c_0_1) 1)
+	(= (distance c_0_1 c_0_0) 1)
+	
+	(connected c_0_1 c_0_2 EAST)
+	(connected c_0_2 c_0_1 WEST)
+	(= (distance c_0_1 c_0_2) 1)
+	(= (distance c_0_2 c_0_1) 1)
+
+	(connected c_0_2 c_0_3 EAST)
+	(connected c_0_3 c_0_2 WEST)
+	(= (distance c_0_2 c_0_3) 1)
+	(= (distance c_0_3 c_0_2) 1)
+
+	(open c_0_1 c_0_0)
+	(open c_0_0 c_0_1)
+	
+	(open c_0_1 c_0_2)
+	(open c_0_2 c_0_1)
+
+	(open c_0_2 c_0_3)
+	(open c_0_3 c_0_2)
+	
+	(connected c_1_1 c_0_1 WEST)
+	(connected c_0_1 c_1_1 EAST)
+	(= (distance c_0_1 c_1_1) 1)
+	(= (distance c_1_1 c_0_1) 1)
+	
+	(open c_1_1 c_0_1)
+	(open c_0_1 c_1_1)
+
+
+	(connected c_1_0 c_1_1 NORTH)
+	(connected c_1_1 c_1_0 SOUTH)
+	(= (distance c_1_0 c_1_1) 1)
+	(= (distance c_1_1 c_1_0) 1)
+	
+	(connected c_0_0 c_1_0 NORTH)
+	(connected c_1_0 c_0_0 SOUTH)
+	(= (distance c_0_0 c_1_0) 5)
+	(= (distance c_1_0 c_0_0) 5)
+
+	
+	(door_obj d1 c_0_0 c_1_0)
+	(door_obj d1 c_1_0 c_0_0)
+	(lock_color d1 GREEN)
+	(mechanism_OK d1)
+	
+	(door_obj d2 c_1_0 c_1_1)
+	(door_obj d2 c_1_1 c_1_0)
+	(lock_color d1 BLUE)
+	(mechanism_OK d2)
+	
+	(gun_at c_1_0 SHOTGUN)
+	(ammo_at c_1_1 SHOTGUN)
+	
+	(key_at c_0_0 GREEN)
+	(key_at c_0_2 BLUE)
+	
+	(robot_at c_0_0)
+	(facing NORTH)
+	
+	(mon_state mojo ALIVE)
+	(mon_at mojo c_0_3 SOUTH)
+	
+	(at 100 (not (mechanism_OK d1)))
+)
+
+(:goal (mon_state mojo DEAD)
+ ) 
+)
